@@ -150,10 +150,6 @@ select {
   padding: 24px;
 }
 
-.is-hidden {
-  display: none;
-}
-
 .gate-page {
   position: relative;
   z-index: 3;
@@ -307,6 +303,11 @@ select {
 
 .gate-page.is-opening .gate-content {
   animation: fadeGateContent 420ms ease forwards;
+}
+
+.gate-page.is-hidden,
+.app-shell.is-hidden {
+  display: none;
 }
 
 .topbar-actions {
