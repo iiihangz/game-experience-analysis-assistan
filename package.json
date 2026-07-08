@@ -1,0 +1,17 @@
+{
+  "name": "game-experience-analysis-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A static web app for game experience feedback analysis, structured reports, solutions, and Markdown export.",
+  "scripts": {
+    "start": "python -m http.server 5173 --bind 127.0.0.1",
+    "check": "node --check app.js"
+  },
+  "keywords": [
+    "game",
+    "experience-analysis",
+    "feedback",
+    "markdown"
+  ],
+  "license": "MIT"
+}

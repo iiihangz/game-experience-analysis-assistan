@@ -1,0 +1,13 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Runtime/build output
+node_modules/
+dist/
+coverage/
+
+# Local environment
+.env
+.env.local

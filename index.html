@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>游戏体验分析助手</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="game-backdrop" aria-hidden="true">
+      <div
+        class="game-card card-elden"
+        style="--image: url('https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/capsule_616x353.jpg?t=1767883716')"
+      ></div>
+      <div
+        class="game-card card-zelda"
+        style="--image: url('https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000063714/fb30eab428df3fc993b41c76e20f72e4d76d49734d17d31996b5ab61c414b117')"
+      ></div>
+      <div
+        class="game-card card-genshin"
+        style="--image: url('https://upload-static.hoyoverse.com/hk4e/upload/fb/common.jpg')"
+      ></div>
+      <div
+        class="game-card card-valorant"
+        style="--image: url('https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/083baed63d306ee9ba41df4971ac0f6bb0222032-1920x1080.jpg?accountingTag=VAL')"
+      ></div>
+      <div
+        class="game-card card-minecraft"
+        style="--image: url('https://www.minecraft.net/content/dam/minecraftnet/franchise/logos/minecraft-creeper-face.jpg')"
+      ></div>
+    </div>
+
+    <section class="gate-page" id="gatePage" aria-label="游戏体验分析助手入口">
+      <div class="gate-stage">
+        <div class="gate-door left-door" aria-hidden="true">
+          <div class="door-panel">
+            <span>BUG</span>
+            <span>体验</span>
+            <span>反馈</span>
+          </div>
+        </div>
+        <div class="gate-door right-door" aria-hidden="true">
+          <div class="door-panel">
+            <span>分析</span>
+            <span>方案</span>
+            <span>报告</span>
+          </div>
+        </div>
+
+        <div class="gate-content">
+          <p class="eyebrow">Game Experience Analyst</p>
+          <h1>游戏体验分析助手</h1>
+          <p class="gate-copy">
+            把玩家反馈、Bug、好评和可优化点整理成结构化分析报告，并给出可执行的参考解决方案。
+          </p>
+          <div class="gate-stats" aria-label="功能概览">
+            <span>分类分析</span>
+            <span>典型案例</span>
+            <span>解决方案</span>
+            <span>Markdown 导出</span>
+          </div>
+          <button class="gate-button" id="enterApp" type="button">开始体验分析</button>
+        </div>
+      </div>
+    </section>
+
+    <main class="app-shell is-hidden" id="appShell">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Game Experience Analyst</p>
+            <h1>游戏体验分析助手</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="ghost-button" id="backToGate" type="button">返回入口</button>
+            <div class="status-pill" id="reportStatus">等待输入</div>
+          </div>
+        </header>
+
+        <section class="game-mood-strip" aria-label="游戏素材背景墙">
+          <figure>
+            <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1245620/capsule_616x353.jpg?t=1767883716" alt="ELDEN RING" />
+          </figure>
+          <figure>
+            <img src="https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000063714/fb30eab428df3fc993b41c76e20f72e4d76d49734d17d31996b5ab61c414b117" alt="The Legend of Zelda: Tears of the Kingdom" />
+          </figure>
+          <figure>
+            <img src="https://upload-static.hoyoverse.com/hk4e/upload/fb/common.jpg" alt="Genshin Impact" />
+          </figure>
+          <figure>
+            <img src="https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/083baed63d306ee9ba41df4971ac0f6bb0222032-1920x1080.jpg?accountingTag=VAL" alt="VALORANT" />
+          </figure>
+          <figure>
+            <img src="https://www.minecraft.net/content/dam/minecraftnet/franchise/logos/minecraft-creeper-face.jpg" alt="Minecraft" />
+          </figure>
+        </section>
+
+        <div class="layout">
+          <section class="input-panel" aria-label="体验问题输入区">
+            <div class="section-heading">
+              <h2>体验问题</h2>
+              <button class="ghost-button" id="clearInput" type="button">清空</button>
+            </div>
+
+            <div class="control-row full-row">
+              <label for="analysisCategory">分析分类</label>
+              <select id="analysisCategory"></select>
+            </div>
+
+            <div class="example-bank" aria-label="典型体验例子">
+              <div class="section-heading compact-heading">
+                <h3>典型体验例子</h3>
+                <span id="exampleHint">点击填入问题</span>
+              </div>
+              <div class="example-grid" id="exampleGrid"></div>
+            </div>
+
+            <textarea
+              id="problemInput"
+              placeholder="例如：新手玩家在第 3 关频繁流失，反馈说目标不清楚、失败后不知道如何调整。"
+            ></textarea>
+
+            <div class="section-heading dimension-heading">
+              <h2>分析维度</h2>
+              <button class="ghost-button" id="selectCore" type="button">核心维度</button>
+            </div>
+            <div class="dimension-grid" id="dimensionGrid"></div>
+
+            <div class="control-row">
+              <label for="playerType">玩家类型</label>
+              <select id="playerType">
+                <option value="新手玩家">新手玩家</option>
+                <option value="轻度玩家">轻度玩家</option>
+                <option value="核心玩家">核心玩家</option>
+                <option value="回流玩家">回流玩家</option>
+              </select>
+            </div>
+
+            <div class="control-row">
+              <label for="gameStage">体验阶段</label>
+              <select id="gameStage">
+                <option value="新手引导">新手引导</option>
+                <option value="前 10 分钟">前 10 分钟</option>
+                <option value="核心循环">核心循环</option>
+                <option value="中后期留存">中后期留存</option>
+                <option value="付费转化">付费转化</option>
+              </select>
+            </div>
+
+            <button class="primary-button" id="generateReport" type="button">生成分析报告</button>
+            <div class="action-grid">
+              <button class="secondary-button" id="saveReport" type="button" disabled>保存报告</button>
+              <button class="secondary-button" id="exportMarkdown" type="button" disabled>导出 Markdown</button>
+            </div>
+          </section>
+
+          <section class="report-panel" aria-label="结构化分析报告">
+            <div class="report-toolbar">
+              <div>
+                <p class="eyebrow">Structured Report</p>
+                <h2>分析报告</h2>
+              </div>
+              <div class="score-card">
+                <span>优先级</span>
+                <strong id="priorityScore">--</strong>
+              </div>
+            </div>
+
+            <article id="reportOutput" class="report-output empty-state">
+              <h3>输入体验问题后生成报告</h3>
+              <p>报告会包含问题判断、分类拆解、设计建议、验证指标和下一步实验。</p>
+            </article>
+          </section>
+        </div>
+
+        <section class="saved-panel" aria-label="已保存报告">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Saved Reports</p>
+              <h2>已保存报告</h2>
+            </div>
+            <button class="ghost-button danger-button" id="clearSaved" type="button">清空保存</button>
+          </div>
+          <div class="saved-list" id="savedList"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
