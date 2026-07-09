@@ -2,6 +2,10 @@
 
 这是一个面向游戏体验反馈分析的前端工具原型，适合用于作品集展示、岗位负责人预览和面试前快速演示。
 
+## 在线演示
+
+已部署地址：[https://imaginative-longma-304d25.netlify.app](https://imaginative-longma-304d25.netlify.app)
+
 ## 推荐方式：Netlify Drop
 
 1. 在本项目目录运行：

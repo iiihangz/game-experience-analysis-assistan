@@ -66,6 +66,8 @@ npm run start
 
 ## 作品集快速展示
 
+在线演示：[https://imaginative-longma-304d25.netlify.app](https://imaginative-longma-304d25.netlify.app)
+
 如果只是想把网页发给岗位负责人查看，推荐使用 Netlify Drop：
 
 ```powershell
