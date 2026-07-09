@@ -10,12 +10,12 @@ const dimensions = [
 ];
 
 const categories = [
-  { id: "bug", label: "Bug / 异常", tone: "danger" },
-  { id: "praise", label: "好评亮点", tone: "success" },
-  { id: "improve", label: "可优化点", tone: "warning" },
-  { id: "retention", label: "留存风险", tone: "danger" },
-  { id: "monetization", label: "付费体验", tone: "info" },
-  { id: "operation", label: "操作手感", tone: "neutral" },
+  { id: "bug", label: "Bug", tone: "danger" },
+  { id: "balance", label: "数值问题", tone: "warning" },
+  { id: "guide", label: "引导问题", tone: "info" },
+  { id: "pace", label: "节奏问题", tone: "neutral" },
+  { id: "monetization", label: "付费问题", tone: "danger" },
+  { id: "control", label: "操作手感", tone: "success" },
 ];
 
 const typicalExamples = [
@@ -28,15 +28,15 @@ const typicalExamples = [
     dimensions: ["feedback", "goal", "accessibility"],
   },
   {
-    category: "praise",
-    title: "战斗打击感好",
-    problem: "玩家普遍反馈近战攻击命中反馈很爽，音效、屏幕震动和敌人受击动画配合自然，愿意反复挑战精英怪。",
+    category: "balance",
+    title: "怪物伤害过高",
+    problem: "玩家反馈第三关怪物伤害太高，普通攻击两下就会失败，装备掉率也偏低，感觉不是自己操作问题而是数值压制。",
     playerType: "核心玩家",
     gameStage: "核心循环",
-    dimensions: ["feedback", "control", "immersion"],
+    dimensions: ["difficulty", "feedback", "pace"],
   },
   {
-    category: "improve",
+    category: "guide",
     title: "新手目标不清",
     problem: "新手玩家在第 3 关频繁流失。访谈里他们说目标不清楚，失败后不知道应该换策略还是继续练操作。",
     playerType: "新手玩家",
@@ -44,7 +44,7 @@ const typicalExamples = [
     dimensions: ["goal", "feedback", "difficulty", "pace"],
   },
   {
-    category: "retention",
+    category: "pace",
     title: "重复刷图疲劳",
     problem: "玩家进入中期后每天需要重复刷同一张资源图，奖励变化少，连续 3 天后活跃率明显下降。",
     playerType: "轻度玩家",
@@ -53,14 +53,14 @@ const typicalExamples = [
   },
   {
     category: "monetization",
-    title: "礼包压迫感",
+    title: "首充弹窗频繁",
     problem: "玩家觉得首充礼包弹窗出现太早，刚完成教学就连续看到 3 个付费入口，影响继续探索的意愿。",
     playerType: "新手玩家",
     gameStage: "付费转化",
     dimensions: ["pace", "goal", "immersion"],
   },
   {
-    category: "operation",
+    category: "control",
     title: "闪避不跟手",
     problem: "玩家反馈闪避按键有时没有立刻响应，尤其在攻击动画结束前输入会丢失，失败时容易归因于操作不顺。",
     playerType: "核心玩家",
@@ -114,28 +114,46 @@ const dimensionAdvice = {
 
 const categoryAdvice = {
   bug: {
-    judgement: "这类问题优先按阻断体验处理，重点确认复现路径、影响范围和临时绕行方案。",
-    experiment: "先建立复现用例和日志埋点，再验证修复后任务完成率是否回升。",
+    judgement: "这类反馈优先判断是否阻断主流程或造成进度损失，核心是复现路径、影响范围和临时兜底。",
+    causes: ["状态机没有正确流转", "任务或关卡触发条件缺失", "客户端与服务端数据不同步", "异常分支缺少恢复入口"],
+    suggestions: ["记录稳定复现路径、账号状态、设备信息和关卡节点。", "先补临时绕行或自动修复入口，再安排根因修复。", "给受影响玩家提供进度恢复、补偿或明确提示。"],
+    metrics: ["复现率", "异常日志量", "任务完成率", "客服工单量"],
+    nextAction: "建立复现用例和日志埋点，修复后用同一路径回归验证。",
   },
-  praise: {
-    judgement: "这是可复用的体验资产，应该拆解出触发好评的设计要素，迁移到相邻玩法。",
-    experiment: "保留核心反馈组合，做相邻场景复用测试，观察重复游玩率和主动分享率。",
+  balance: {
+    judgement: "这类反馈通常来自难度、收益、成长速度或资源消耗不匹配，需要先确认玩家失败是学习成本还是数值压制。",
+    causes: ["敌人伤害或血量超过当前成长预期", "奖励掉率不足以支撑继续挑战", "关卡难度跳升过快", "资源消耗和产出比例失衡"],
+    suggestions: ["定位失败率最高的关卡、怪物或资源节点。", "先做小幅数值回调或奖励补偿，不一次性重做整条成长线。", "给高失败节点增加低风险练习或保底机制。"],
+    metrics: ["失败率", "通关率", "战斗时长", "资源消耗/获得比"],
+    nextAction: "拉取关卡失败和资源消耗数据，做一版小范围数值对比测试。",
   },
-  improve: {
-    judgement: "这是体验摩擦点，通常不会马上阻断，但会持续消耗耐心和理解成本。",
-    experiment: "做低成本版本优化，对比优化前后的完成率、停留时长和负面反馈量。",
+  guide: {
+    judgement: "这类反馈说明玩家没有理解当前目标、规则或下一步动作，优先降低理解成本。",
+    causes: ["目标提示不够明确", "失败后缺少下一步建议", "教程信息过长或出现时机过早", "关键路径缺少视觉引导"],
+    suggestions: ["把当前目标、完成条件和失败后建议拆开展示。", "在卡点加入可回看的短提示，而不是一次性长说明。", "用高亮、动线或任务追踪降低玩家寻找成本。"],
+    metrics: ["提示查看率", "首轮完成率", "卡点停留时长"],
+    nextAction: "针对最高流失的新手节点补一版短提示，观察提示后完成率。",
   },
-  retention: {
-    judgement: "这是留存风险，需要判断玩家是在缺少目标、缺少变化，还是奖励预期被耗尽。",
-    experiment: "给重复节点加入节奏变化或短期目标，观察 3 日和 7 日回访变化。",
+  pace: {
+    judgement: "这类反馈说明玩家在理解、行动和奖励之间等待过久，或重复内容缺少变化。",
+    causes: ["低信息等待时间过长", "重复玩法缺少阶段目标", "奖励反馈不及时", "每日任务结构过于固定"],
+    suggestions: ["压缩无意义等待，把奖励反馈放在关键动作之后。", "给重复玩法加入阶段目标、随机事件或扫荡条件。", "减少玩家每天必须重复完成的低价值步骤。"],
+    metrics: ["单局时长", "等待时长", "重复玩法进入率", "3/7 日留存"],
+    nextAction: "先优化一个重复率最高的节点，对比 3 日和 7 日回访变化。",
   },
   monetization: {
-    judgement: "这是商业化触点问题，重点是判断付费入口是否打断了玩家的自主感。",
-    experiment: "调整弹窗时机、频次和上下文，观察转化率、关闭率和后续留存。",
+    judgement: "这类反馈重点判断付费入口是否打断玩家自主感，避免短期转化伤害长期留存。",
+    causes: ["弹窗出现过早或过密", "付费入口打断核心探索", "非付费成长路径不清晰", "礼包文案制造压迫感"],
+    suggestions: ["降低连续弹窗频次，给玩家明确关闭路径。", "把付费推荐延后到玩家产生资源需求之后。", "给非付费玩家保留清晰成长路线，避免付费像唯一解。"],
+    metrics: ["弹窗关闭率", "付费转化率", "弹窗后退出率", "次日留存"],
+    nextAction: "做弹窗时机和频次 A/B 测试，同时观察转化和次日留存。",
   },
-  operation: {
-    judgement: "这是手感和可控性问题，玩家会把它直接归因到公平性和技术质量。",
-    experiment: "检查输入缓冲和反馈延迟，做高频动作的逐帧验证和主观评分测试。",
+  control: {
+    judgement: "这类反馈会被玩家直接归因为公平性和技术质量，优先检查输入、动画和反馈链路。",
+    causes: ["输入缓冲不足", "动画锁定或取消窗口不清晰", "命中判定与视觉表现不一致", "反馈延迟让失败原因不可感知"],
+    suggestions: ["逐帧检查输入、动画锁定、镜头和命中反馈的时间关系。", "优先给高频动作加入输入缓冲或取消窗口。", "强化失败原因反馈，让玩家知道是操作失误还是规则限制。"],
+    metrics: ["输入延迟", "误操作反馈量", "动作主观评分", "取消/缓冲触发率"],
+    nextAction: "用高频动作做逐帧验证，再组织一轮主观手感评分测试。",
   },
 };
 
@@ -144,23 +162,23 @@ const categorySolutions = {
     title: "异常定位与修复",
     steps: ["记录稳定复现路径、账号状态、关卡节点和设备信息。", "加日志确认触发条件，先修阻断路径，再补偿受影响玩家。", "修复后用同一复现路径回归，并观察任务完成率和客服反馈量。"],
   },
-  praise: {
-    title: "亮点复用与放大",
-    steps: ["提炼好评来源：反馈、节奏、奖励、情绪或社交触发点。", "保留原体验的关键手感，不要为了扩展而稀释核心爽点。", "把亮点迁移到相邻玩法，并观察复玩率、分享率和正向评论。"],
+  balance: {
+    title: "数值校准与保底",
+    steps: ["锁定失败率、战斗时长或资源缺口最异常的节点。", "先做小幅参数回调、奖励保底或难度缓冲。", "用通关率、失败率和资源消耗/获得比验证是否回到合理区间。"],
   },
-  improve: {
-    title: "低成本体验优化",
-    steps: ["先找最小可改点，优先解决玩家最常提到的理解成本或等待成本。", "做一版轻量提示、流程缩短或反馈增强，不一次重做整个系统。", "用完成率、停留时长和负面反馈量判断是否值得继续投入。"],
+  guide: {
+    title: "目标引导补强",
+    steps: ["把当前目标、完成条件和失败后建议拆成短提示。", "在关键卡点补充视觉动线或任务追踪。", "用提示查看率、首轮完成率和卡点停留时长验证。"],
   },
-  retention: {
-    title: "留存节奏修复",
-    steps: ["定位流失前 1-2 个关键节点，判断是目标断档、奖励疲劳还是重复劳动。", "加入短期目标、阶段奖励或内容变化，降低每日重复感。", "观察 3 日、7 日回访和重复玩法进入率。"],
+  pace: {
+    title: "节奏压缩与变化",
+    steps: ["定位等待最长或重复最多的体验节点。", "压缩低信息等待，加入阶段目标或内容变化。", "观察单局时长、重复玩法进入率和 3/7 日留存。"],
   },
   monetization: {
     title: "付费触点降压",
     steps: ["降低弹窗频次，把付费入口放到玩家产生需求之后。", "给非付费玩家保留明确成长路径，避免让付费像唯一解。", "同时观察付费转化、关闭率、次日留存和负面反馈。"],
   },
-  operation: {
+  control: {
     title: "手感与输入校准",
     steps: ["逐帧检查输入、动画锁定、镜头和命中反馈的时间关系。", "优先加入输入缓冲、取消窗口或更清晰的失败反馈。", "用高频动作主观评分和输入延迟数据验证是否变顺。"],
   },
@@ -168,10 +186,18 @@ const categorySolutions = {
 
 const storageKey = "game-experience-saved-reports";
 
+const legacyCategoryMap = {
+  praise: "guide",
+  improve: "guide",
+  retention: "pace",
+  operation: "control",
+};
+
 const state = {
   markdown: "",
   currentReport: null,
   savedReports: readSavedReports(),
+  categoryEditedByUser: false,
 };
 
 const gatePage = document.querySelector("#gatePage");
@@ -208,7 +234,7 @@ function renderCategories() {
   categorySelect.innerHTML = categories
     .map((category) => `<option value="${category.id}">${category.label}</option>`)
     .join("");
-  categorySelect.value = "improve";
+  categorySelect.value = "guide";
 }
 
 function renderExamples() {
@@ -247,13 +273,14 @@ function renderSavedReports() {
   savedList.innerHTML = state.savedReports
     .map((report) => {
       const category = getCategory(report.categoryId);
+      const priorityDisplay = getPriorityDisplay(report);
       return `
         <article class="saved-item">
           <div>
             <span class="category-pill ${category.tone}">${category.label}</span>
             <h3>${escapeHtml(report.title)}</h3>
             <p>${escapeHtml(report.problem)}</p>
-            <small>${report.createdAt} · 优先级 ${report.priority}/10</small>
+            <small>${report.createdAt} · 优先级 ${priorityDisplay}</small>
           </div>
           <div class="saved-actions">
             <button class="ghost-button" type="button" data-load-report="${report.id}">载入</button>
@@ -272,7 +299,8 @@ function getSelectedDimensions() {
 }
 
 function getCategory(categoryId) {
-  return categories.find((category) => category.id === categoryId) || categories[2];
+  const normalizedId = legacyCategoryMap[categoryId] || categoryId;
+  return categories.find((category) => category.id === normalizedId) || categories[2];
 }
 
 function setSelectedDimensions(ids) {
@@ -281,23 +309,69 @@ function setSelectedDimensions(ids) {
   });
 }
 
-function inferPriority(problem, selectedCount, categoryId) {
-  const urgentWords = ["流失", "退出", "差评", "付费", "卡关", "崩溃", "投诉", "失败", "卡死", "丢失"];
-  const categoryWeight = {
-    bug: 3,
-    praise: -1,
-    improve: 1,
-    retention: 3,
-    monetization: 2,
-    operation: 2,
+function inferCategory(feedback) {
+  const rules = [
+    { id: "bug", keywords: ["崩溃", "闪退", "卡死", "无法继续", "没刷新", "丢失", "报错", "黑屏", "死机"] },
+    { id: "balance", keywords: ["太难", "太简单", "伤害", "血量", "掉率", "数值", "战力", "装备", "奖励太少", "资源不够", "过不去"] },
+    { id: "guide", keywords: ["不知道", "目标不清", "迷路", "看不懂", "教程", "引导", "下一步", "提示", "不会玩"] },
+    { id: "pace", keywords: ["重复", "疲劳", "无聊", "刷", "节奏", "等待", "太慢", "耗时", "肝", "流失"] },
+    { id: "monetization", keywords: ["付费", "首充", "礼包", "弹窗", "氪金", "充值", "广告", "强迫", "逼氪"] },
+    { id: "control", keywords: ["不跟手", "延迟", "按键", "闪避", "操作", "手感", "卡顿", "命中", "输入"] },
+  ];
+
+  const normalized = feedback.toLowerCase();
+  const matched = rules
+    .map((rule) => ({
+      id: rule.id,
+      score: rule.keywords.filter((keyword) => normalized.includes(keyword.toLowerCase())).length,
+    }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return matched[0]?.id || "guide";
+}
+
+function syncAutoCategory() {
+  const feedback = problemInput.value.trim();
+  if (!feedback || state.categoryEditedByUser) return;
+  categorySelect.value = inferCategory(feedback);
+}
+
+function inferPriority(feedback, categoryId) {
+  const p0Words = ["崩溃", "闪退", "卡死", "无法继续", "进度丢失", "大量流失", "强迫付费", "无法登录", "黑屏"];
+  const p1Words = ["流失", "退出", "差评", "投诉", "失败", "过不去", "太难", "付费", "弹窗", "不跟手", "延迟", "目标不清"];
+  const categoryP0 = categoryId === "bug" && p0Words.some((word) => feedback.includes(word));
+
+  if (categoryP0 || p0Words.some((word) => feedback.includes(word))) {
+    return {
+      label: "P0",
+      reason: "阻断流程、造成进度损失或引发强烈负反馈，需要优先处理。",
+    };
+  }
+
+  if (["bug", "monetization", "control", "balance"].includes(categoryId) || p1Words.some((word) => feedback.includes(word))) {
+    return {
+      label: "P1",
+      reason: "明显影响完成率、留存、付费转化或核心手感，应进入近期优化。",
+    };
+  }
+
+  return {
+    label: "P2",
+    reason: "属于局部体验摩擦或轻量优化点，可排入常规迭代。",
   };
-  const urgentHits = urgentWords.filter((word) => problem.includes(word)).length;
-  return Math.min(10, Math.max(3, 4 + urgentHits + Math.ceil(selectedCount / 2) + categoryWeight[categoryId]));
+}
+
+function getPriorityDisplay(report) {
+  if (report.priorityLabel) return report.priorityLabel;
+  if (typeof report.priority === "number") return `${report.priority}/10`;
+  return "--";
 }
 
 function buildReport() {
   const problem = problemInput.value.trim();
   const selected = getSelectedDimensions();
+  syncAutoCategory();
   const category = getCategory(categorySelect.value);
   const categoryDetail = categoryAdvice[category.id];
 
@@ -312,7 +386,7 @@ function buildReport() {
     return;
   }
 
-  const priority = inferPriority(problem, selected.length, category.id);
+  const priority = inferPriority(problem, category.id);
   const stage = gameStage.value;
   const audience = playerType.value;
   const hypotheses = selected.map((dimension) => ({
@@ -320,30 +394,44 @@ function buildReport() {
     ...dimensionAdvice[dimension.id],
   }));
   const solutions = buildSolutions(problem, category, selected);
+  const suggestions = categoryDetail.suggestions;
+  const metrics = categoryDetail.metrics;
 
   const diagnosis = [
-    `分析分类：${category.label}`,
+    `自动分类结果：${category.label}`,
+    `优先级：${priority.label}`,
     `目标玩家：${audience}`,
     `体验阶段：${stage}`,
     categoryDetail.judgement,
+    priority.reason,
   ];
 
   const title = makeReportTitle(problem, category.label);
   const markdown = [
     `# ${title}`,
     "",
-    `## 体验问题`,
+    `## 玩家反馈`,
     problem,
     "",
     "## 分析范围",
-    `- 分析分类：${category.label}`,
+    `- 自动分类结果：${category.label}`,
     `- 玩家类型：${audience}`,
     `- 体验阶段：${stage}`,
     `- 分析维度：${selected.map((dimension) => dimension.label).join("、")}`,
-    `- 优先级：${priority}/10`,
+    `- 优先级：${priority.label}`,
+    `- 优先级依据：${priority.reason}`,
     "",
-    "## 初步判断",
+    "## 问题判断",
     ...diagnosis.map((item) => `- ${item}`),
+    "",
+    "## 可能原因",
+    ...categoryDetail.causes.map((item) => `- ${item}`),
+    "",
+    "## 改进建议",
+    ...suggestions.map((item) => `- ${item}`),
+    "",
+    "## 验证指标",
+    ...metrics.map((item) => `- ${item}`),
     "",
     "## 维度拆解",
     ...hypotheses.flatMap((item) => [
@@ -361,8 +449,8 @@ function buildReport() {
       `- 验证方式：${solution.validation}`,
       "",
     ]),
-    "## 下一步实验",
-    `- ${categoryDetail.experiment}`,
+    "## 下一步行动",
+    `- ${categoryDetail.nextAction}`,
     "- 观察 24-72 小时内的关键指标变化，优先判断问题是否被准确命中。",
     "- 如果指标改善但主观反馈下降，再回头压缩提示打扰、文本长度或弹窗频次。",
     "",
@@ -380,13 +468,17 @@ function buildReport() {
     audience,
     stage,
     dimensions: selected.map((dimension) => dimension.id),
+    priorityLabel: priority.label,
+    priorityReason: priority.reason,
     priority,
+    suggestions,
+    metrics,
     markdown,
     solutions,
     createdAt: formatDateTime(new Date()),
   };
 
-  priorityScore.textContent = priority;
+  priorityScore.textContent = priority.label;
   reportStatus.textContent = "报告已生成";
   exportButton.disabled = false;
   saveButton.disabled = false;
@@ -394,24 +486,28 @@ function buildReport() {
   reportOutput.classList.remove("empty-state");
   reportOutput.innerHTML = `
     <section class="report-section">
-      <h3>体验问题</h3>
+      <h3>玩家反馈</h3>
       <p>${escapeHtml(problem)}</p>
       <div class="tag-row">
         <span class="category-pill ${category.tone}">${category.label}</span>
+        <span class="tag">${priority.label}</span>
         <span class="tag">${audience}</span>
         <span class="tag">${stage}</span>
         ${selected.map((dimension) => `<span class="tag">${dimension.label}</span>`).join("")}
       </div>
     </section>
     <section class="report-section">
-      <h3>初步判断</h3>
+      <h3>问题判断</h3>
       <ul class="finding-list">${diagnosis.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
     </section>
     <section class="report-section">
-      <h3>分类建议</h3>
+      <h3>可能原因</h3>
+      <ul class="finding-list">${categoryDetail.causes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </section>
+    <section class="report-section">
+      <h3>改进建议</h3>
       <ul class="finding-list">
-        <li><strong>${category.label}</strong><br>${categoryDetail.judgement}</li>
-        <li>${categoryDetail.experiment}</li>
+        ${suggestions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
     </section>
     <section class="report-section solution-section">
@@ -453,14 +549,19 @@ function buildReport() {
     <section class="report-section">
       <h3>验证指标</h3>
       <ul class="metric-list">
+        ${metrics.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         ${hypotheses.map((item) => `<li>${item.label}：${item.metric}</li>`).join("")}
       </ul>
+    </section>
+    <section class="report-section">
+      <h3>下一步行动</h3>
+      <p>${escapeHtml(categoryDetail.nextAction)}</p>
     </section>
   `;
 }
 
 function buildSolutions(problem, category, selectedDimensions) {
-  const categoryPlan = categorySolutions[category.id] || categorySolutions.improve;
+  const categoryPlan = categorySolutions[category.id] || categorySolutions.guide;
   const dimensionPlans = selectedDimensions.map((dimension) => {
     const advice = dimensionAdvice[dimension.id];
     return {
@@ -477,7 +578,7 @@ function buildSolutions(problem, category, selectedDimensions) {
       title: categoryPlan.title,
       target: `当前反馈被归类为「${category.label}」。`,
       action: categoryPlan.steps.join(" "),
-      validation: categoryAdvice[category.id].experiment,
+      validation: categoryAdvice[category.id].metrics.join("、"),
     },
     problemPlan,
     ...dimensionPlans,
@@ -491,6 +592,12 @@ function inferProblemSolution(problem, category) {
       title: "阻断问题兜底方案",
       action: "先提供临时绕行提示或自动修复入口，同时把异常节点记录到日志；修复后给受影响玩家补偿或进度恢复。",
       validation: "复现路径通过率、异常日志数量、客服相关工单量。",
+    },
+    {
+      keywords: ["太难", "伤害", "掉率", "数值", "资源不够", "过不去"],
+      title: "数值压力校准方案",
+      action: "先定位失败率和资源缺口最高的节点，做小幅伤害、血量、掉率或保底调整，避免一次性改变整条成长曲线。",
+      validation: "失败率、通关率、战斗时长、资源消耗/获得比。",
     },
     {
       keywords: ["目标不清", "不知道", "迷路", "看不懂"],
@@ -532,7 +639,7 @@ function inferProblemSolution(problem, category) {
     title: "通用负面反馈处理方案",
     target: `当前反馈需要结合「${category.label}」分类进一步验证。`,
     action: "先拆成可复现现象、玩家感受、影响节点和可能原因，再选择 1 个最小改动上线验证。",
-    validation: "负面反馈量、关键行为转化率、玩家主观满意度。",
+    validation: categoryAdvice[category.id].metrics.join("、"),
   };
 }
 
@@ -554,11 +661,12 @@ function loadSavedReport(reportId) {
   const report = state.savedReports.find((item) => item.id === reportId);
   if (!report) return;
 
-  categorySelect.value = report.categoryId;
+  state.categoryEditedByUser = true;
+  categorySelect.value = getCategory(report.categoryId).id;
   problemInput.value = report.problem;
   playerType.value = report.audience;
   gameStage.value = report.stage;
-  setSelectedDimensions(report.dimensions);
+  setSelectedDimensions(report.dimensions || dimensions.filter((dimension) => dimension.core).map((dimension) => dimension.id));
   state.markdown = report.markdown;
   buildReport();
   reportStatus.textContent = "已载入保存报告";
@@ -591,8 +699,10 @@ function applyExample(index) {
   const example = typicalExamples[index];
   if (!example) return;
 
+  state.categoryEditedByUser = false;
   categorySelect.value = example.category;
   problemInput.value = example.problem;
+  syncAutoCategory();
   playerType.value = example.playerType;
   gameStage.value = example.gameStage;
   setSelectedDimensions(example.dimensions);
@@ -601,6 +711,8 @@ function applyExample(index) {
 
 function clearInput() {
   problemInput.value = "";
+  state.categoryEditedByUser = false;
+  categorySelect.value = "guide";
   priorityScore.textContent = "--";
   state.markdown = "";
   state.currentReport = null;
@@ -609,8 +721,8 @@ function clearInput() {
   reportStatus.textContent = "等待输入";
   reportOutput.classList.add("empty-state");
   reportOutput.innerHTML = `
-    <h3>输入体验问题后生成报告</h3>
-    <p>报告会包含问题判断、分类拆解、设计建议、验证指标和下一步实验。</p>
+    <h3>输入玩家反馈后生成报告</h3>
+    <p>报告会包含自动分类、P0/P1/P2 优先级、改进建议、验证指标和下一步行动。</p>
   `;
 }
 
@@ -654,6 +766,12 @@ document.querySelector("#selectCore").addEventListener("click", () => {
 document.querySelector("#generateReport").addEventListener("click", buildReport);
 exportButton.addEventListener("click", exportMarkdown);
 saveButton.addEventListener("click", saveCurrentReport);
+problemInput.addEventListener("input", () => {
+  syncAutoCategory();
+});
+categorySelect.addEventListener("change", () => {
+  state.categoryEditedByUser = true;
+});
 document.querySelector("#clearSaved").addEventListener("click", () => {
   state.savedReports = [];
   writeSavedReports();

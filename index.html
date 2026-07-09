@@ -51,7 +51,7 @@
           <p class="eyebrow">Game Experience Analyst</p>
           <h1>游戏体验分析助手</h1>
           <p class="gate-copy">
-            把玩家反馈、Bug、好评和可优化点整理成结构化分析报告，并给出可执行的参考解决方案。
+            把玩家反馈自动归类为 Bug、数值、引导、节奏、付费和操作手感问题，并生成可执行的分析报告。
           </p>
           <div class="gate-stats" aria-label="功能概览">
             <span>分类分析</span>
@@ -96,14 +96,14 @@
         </section>
 
         <div class="layout">
-          <section class="input-panel" aria-label="体验问题输入区">
+          <section class="input-panel" aria-label="玩家反馈输入区">
             <div class="section-heading">
-              <h2>体验问题</h2>
+              <h2>玩家反馈</h2>
               <button class="ghost-button" id="clearInput" type="button">清空</button>
             </div>
 
             <div class="control-row full-row">
-              <label for="analysisCategory">分析分类</label>
+              <label for="analysisCategory">自动分类 / 可手动修正</label>
               <select id="analysisCategory"></select>
             </div>
 
@@ -117,7 +117,7 @@
 
             <textarea
               id="problemInput"
-              placeholder="例如：新手玩家在第 3 关频繁流失，反馈说目标不清楚、失败后不知道如何调整。"
+              placeholder="请输入真实玩家反馈，例如：任务卡死无法继续、怪物伤害太高、新手不知道下一步去哪、首充弹窗太频繁、闪避按键不跟手。"
             ></textarea>
 
             <div class="section-heading dimension-heading">
@@ -167,8 +167,8 @@
             </div>
 
             <article id="reportOutput" class="report-output empty-state">
-              <h3>输入体验问题后生成报告</h3>
-              <p>报告会包含问题判断、分类拆解、设计建议、验证指标和下一步实验。</p>
+              <h3>输入玩家反馈后生成报告</h3>
+              <p>报告会包含自动分类、P0/P1/P2 优先级、改进建议、验证指标和下一步行动。</p>
             </article>
           </section>
         </div>
