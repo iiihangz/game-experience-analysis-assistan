@@ -64,6 +64,16 @@ npm run check
 npm run start
 ```
 
+## 作品集快速展示
+
+如果只是想把网页发给岗位负责人查看，推荐使用 Netlify Drop：
+
+```powershell
+.\make-showcase-package.ps1
+```
+
+运行后打开 `https://app.netlify.com/drop`，把 `portfolio-package\netlify-drop\game-experience-analysis-assistant` 文件夹拖进去即可生成在线链接。更详细的交付说明见 [PORTFOLIO_HANDOFF.md](./PORTFOLIO_HANDOFF.md)。
+
 ## 截图
 
 ![游戏体验分析助手截图](./assets/screenshot.png)
