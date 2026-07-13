@@ -183,6 +183,74 @@
           </div>
           <div class="saved-list" id="savedList"></div>
         </section>
+
+        <section class="case-study-panel" aria-labelledby="fightingCaseTitle">
+          <div class="case-study-heading">
+            <div>
+              <p class="eyebrow">Playable Feedback Loop</p>
+              <h2 id="fightingCaseTitle">Fighting Demo 试玩闭环案例</h2>
+              <p>从玩家试玩反馈出发，经过工具归类，落到可执行的波次调整与验证。</p>
+            </div>
+            <button class="primary-button case-load-button" id="loadFightingCase" type="button">载入完整案例报告</button>
+          </div>
+
+          <div class="simulation-note">
+            <strong>样本说明：</strong>以下 18 条均为基于 Fighting Demo 实际玩法构成的<span>模拟试玩反馈</span>，用于展示分析方法，不代表线上真实运营数据。
+          </div>
+
+          <div class="loop-grid" aria-label="试玩到改波次的分析闭环">
+            <article><span>01</span><strong>玩家试玩</strong><p>60 秒生存、移动、方向射击、敌人压力与拾取物。</p></article>
+            <article><span>02</span><strong>收集反馈</strong><p>记录现象、出现时点、玩家感受和失败原因。</p></article>
+            <article><span>03</span><strong>工具归类</strong><p>自动判断问题类型与 P0 / P1 / P2 处理优先级。</p></article>
+            <article><span>04</span><strong>改波次验证</strong><p>小范围调整压力曲线，回测完成率、失败点和主观感受。</p></article>
+          </div>
+
+          <div class="case-columns">
+            <section class="case-subpanel" aria-labelledby="sampleTitle">
+              <div class="section-heading compact-case-heading">
+                <div>
+                  <p class="eyebrow">18 Simulated Samples</p>
+                  <h3 id="sampleTitle">模拟玩家反馈样本</h3>
+                </div>
+                <span>点击载入分析</span>
+              </div>
+              <div class="sample-list" id="fightingSampleList"></div>
+            </section>
+
+            <section class="case-subpanel" aria-labelledby="rulesTitle">
+              <div class="section-heading compact-case-heading">
+                <div>
+                  <p class="eyebrow">Triage Rules</p>
+                  <h3 id="rulesTitle">分类与优先级规则</h3>
+                </div>
+              </div>
+              <div class="rule-stack" id="priorityRuleList"></div>
+              <div class="classification-guide">
+                <h4>分类判断速记</h4>
+                <p><strong>引导：</strong>不知道目标、规则或下一步怎么做。</p>
+                <p><strong>节奏：</strong>等待、重复、压力曲线或奖励间隔不舒服。</p>
+                <p><strong>数值：</strong>伤害、血量、掉落、成长与挑战不匹配。</p>
+                <p><strong>操作：</strong>输入、动画、命中或镜头让动作不跟手。</p>
+              </div>
+            </section>
+          </div>
+
+          <section class="full-case-report" aria-labelledby="fullCaseReportTitle">
+            <div class="case-report-heading">
+              <div>
+                <p class="eyebrow">Complete Example Report</p>
+                <h3 id="fullCaseReportTitle">完整报告：第 3 波压力跳升导致新手过早失败</h3>
+              </div>
+              <span class="tag">节奏问题 · P1</span>
+            </div>
+            <div class="case-report-grid">
+              <article><h4>玩家反馈</h4><p>“20 秒后快怪和爆炸怪一起从两侧进来，我还没搞懂方向射击就被包围。不是想挑战，而是每次都在同一个时间点重开。”</p></article>
+              <article><h4>问题与原因</h4><p>第 3 波同时引入两种新压力，学习窗口被压缩；出生方向分散，玩家无法建立优先处理顺序。</p></article>
+              <article><h4>改波次方案</h4><p>0-15 秒仅基础敌人；16-28 秒单侧加入 1 个快怪；29-42 秒再引入爆炸怪，并将同屏敌人上限下调 1 个。第 25 秒前投放一次移速或射速拾取物。</p></article>
+              <article><h4>验证方式</h4><p>对比 20-35 秒失败率、首次存活 45 秒比例、同节点重开次数与“知道优先处理什么”的主观评分；若完成率提升且重开下降，再扩大调整范围。</p></article>
+            </div>
+          </section>
+        </section>
       </section>
     </main>
 

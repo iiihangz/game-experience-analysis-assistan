@@ -69,6 +69,33 @@ const typicalExamples = [
   },
 ];
 
+const fightingDemoSamples = [
+  { category: "guide", priority: "P2", time: "0-10 秒", text: "第一次进入后只知道移动，不知道方向键可以射击，直到被怪追上才误触发现。", playerType: "新手玩家", stage: "新手引导", dimensions: ["goal", "feedback", "control"] },
+  { category: "guide", priority: "P2", time: "0-10 秒", text: "画面里有倒计时，但我不明白目标是活到 60 秒还是必须清光所有敌人。", playerType: "新手玩家", stage: "新手引导", dimensions: ["goal", "feedback"] },
+  { category: "control", priority: "P1", time: "8-18 秒", text: "边移动边转向射击时，按键组合不太容易理解，常常朝错误方向开火。", playerType: "轻度玩家", stage: "前 10 分钟", dimensions: ["control", "feedback", "goal"] },
+  { category: "balance", priority: "P1", time: "12-20 秒", text: "基础敌人贴近后掉血很快，前几次还没理解攻击距离就结束了，感觉容错偏低。", playerType: "新手玩家", stage: "核心循环", dimensions: ["difficulty", "feedback", "pace"] },
+  { category: "guide", priority: "P2", time: "15-25 秒", text: "捡到图标后不知道获得了什么效果，也不知道是移速、射速还是范围变化。", playerType: "新手玩家", stage: "核心循环", dimensions: ["feedback", "goal", "immersion"] },
+  { category: "pace", priority: "P2", time: "15-25 秒", text: "前十几秒敌人变化很少，连续移动和射击但没有新的判断，节奏有一点平。", playerType: "核心玩家", stage: "核心循环", dimensions: ["pace", "immersion", "feedback"] },
+  { category: "pace", priority: "P1", time: "20-35 秒", text: "20 秒后快怪和爆炸怪同时从两侧进来，我还没搞懂方向射击就被包围，每次都在同一个时间点重开，明显影响完成率。", playerType: "新手玩家", stage: "核心循环", dimensions: ["pace", "difficulty", "goal", "control"] },
+  { category: "control", priority: "P1", time: "20-35 秒", text: "想边后退边射击时，转向和射击反馈有点跟不上，失败时分不清是自己按慢了还是动作没出来。", playerType: "核心玩家", stage: "核心循环", dimensions: ["control", "feedback", "difficulty"] },
+  { category: "balance", priority: "P1", time: "20-35 秒", text: "快怪的追击速度高得突然，普通怪还没处理完就必须逃跑，压力曲线像断层。", playerType: "核心玩家", stage: "核心循环", dimensions: ["difficulty", "pace", "feedback"] },
+  { category: "guide", priority: "P2", time: "20-35 秒", text: "爆炸怪出现时我不知道要优先拉开距离还是先击杀，缺少一个明确的危险提示。", playerType: "新手玩家", stage: "核心循环", dimensions: ["goal", "feedback", "difficulty"] },
+  { category: "control", priority: "P1", time: "30-45 秒", text: "敌人多的时候角色和弹幕混在一起，想判断自己有没有命中比较困难。", playerType: "核心玩家", stage: "核心循环", dimensions: ["feedback", "control", "accessibility"] },
+  { category: "pace", priority: "P2", time: "30-45 秒", text: "中段存活下来后一直是绕圈和射击，缺少一个短目标或奖励节点来提醒我打得不错。", playerType: "轻度玩家", stage: "核心循环", dimensions: ["pace", "feedback", "immersion"] },
+  { category: "balance", priority: "P1", time: "30-45 秒", text: "有时连续两次拿不到有用的拾取物，面对多种怪时只能拖时间，成长感不稳定。", playerType: "核心玩家", stage: "核心循环", dimensions: ["difficulty", "feedback", "pace"] },
+  { category: "bug", priority: "P0", time: "任意时点", text: "一局结束后点击重新开始，偶尔没有进入下一局，画面停在结算状态无法继续操作。", playerType: "核心玩家", stage: "核心循环", dimensions: ["feedback", "accessibility", "control"] },
+  { category: "guide", priority: "P2", time: "45-60 秒", text: "快到 60 秒时不知道是否快赢了，倒计时和胜利条件没有形成足够强的收尾感。", playerType: "轻度玩家", stage: "核心循环", dimensions: ["goal", "feedback", "immersion"] },
+  { category: "pace", priority: "P2", time: "结算后", text: "失败后直接重开很快，但没有告诉我死于哪种敌人或哪一波，下一局不知道该改什么。", playerType: "新手玩家", stage: "核心循环", dimensions: ["feedback", "goal", "pace"] },
+  { category: "control", priority: "P2", time: "结算后", text: "想继续挑战时希望能更快重开，结算界面的确认动作让连续练习被打断。", playerType: "核心玩家", stage: "核心循环", dimensions: ["control", "pace", "feedback"] },
+  { category: "balance", priority: "P2", time: "完整试玩后", text: "如果熟悉操作后能稳定活到 60 秒，后半段的压力和奖励变化不够大，重复挑战动力会下降。", playerType: "核心玩家", stage: "中后期留存", dimensions: ["difficulty", "pace", "immersion"] },
+];
+
+const priorityRules = [
+  { label: "P0", title: "阻断与严重异常", text: "崩溃、卡死、无法重开、进度损失，或影响大量玩家完成核心流程。需要立即止损与修复。" },
+  { label: "P1", title: "核心体验受损", text: "明显降低完成率、留存或核心手感，例如波次压力断层、输入不跟手、关键数值失衡。进入近期迭代。" },
+  { label: "P2", title: "局部摩擦与优化", text: "不阻断流程，但影响理解、节奏或反馈质量，例如提示不清、结算反馈弱。排入常规优化。" },
+];
+
 const dimensionAdvice = {
   goal: {
     issue: "玩家可能无法快速理解当前目标、成功条件或下一步动作。",
@@ -204,6 +231,8 @@ const gatePage = document.querySelector("#gatePage");
 const appShell = document.querySelector("#appShell");
 const dimensionGrid = document.querySelector("#dimensionGrid");
 const exampleGrid = document.querySelector("#exampleGrid");
+const fightingSampleList = document.querySelector("#fightingSampleList");
+const priorityRuleList = document.querySelector("#priorityRuleList");
 const categorySelect = document.querySelector("#analysisCategory");
 const problemInput = document.querySelector("#problemInput");
 const playerType = document.querySelector("#playerType");
@@ -248,6 +277,33 @@ function renderExamples() {
         </button>
       `;
     })
+    .join("");
+}
+
+function renderFightingSamples() {
+  fightingSampleList.innerHTML = fightingDemoSamples
+    .map((sample, index) => {
+      const category = getCategory(sample.category);
+      return `
+        <button class="sample-item" type="button" data-fighting-sample-index="${index}">
+          <span class="sample-meta"><span class="category-pill ${category.tone}">${category.label}</span><span class="sample-priority ${sample.priority.toLowerCase()}">${sample.priority}</span><small>${sample.time}</small></span>
+          <span>${escapeHtml(sample.text)}</span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function renderPriorityRules() {
+  priorityRuleList.innerHTML = priorityRules
+    .map(
+      (rule) => `
+        <article class="priority-rule ${rule.label.toLowerCase()}">
+          <strong>${rule.label}</strong>
+          <div><h4>${rule.title}</h4><p>${rule.text}</p></div>
+        </article>
+      `,
+    )
     .join("");
 }
 
@@ -339,7 +395,7 @@ function syncAutoCategory() {
 
 function inferPriority(feedback, categoryId) {
   const p0Words = ["崩溃", "闪退", "卡死", "无法继续", "进度丢失", "大量流失", "强迫付费", "无法登录", "黑屏"];
-  const p1Words = ["流失", "退出", "差评", "投诉", "失败", "过不去", "太难", "付费", "弹窗", "不跟手", "延迟", "目标不清"];
+  const p1Words = ["流失", "退出", "差评", "投诉", "失败", "过不去", "太难", "付费", "弹窗", "不跟手", "延迟", "目标不清", "完成率", "重开", "压力曲线"];
   const categoryP0 = categoryId === "bug" && p0Words.some((word) => feedback.includes(word));
 
   if (categoryP0 || p0Words.some((word) => feedback.includes(word))) {
@@ -709,6 +765,21 @@ function applyExample(index) {
   buildReport();
 }
 
+function applyFightingSample(index) {
+  const sample = fightingDemoSamples[index];
+  if (!sample) return;
+
+  state.categoryEditedByUser = false;
+  problemInput.value = sample.text;
+  categorySelect.value = sample.category;
+  playerType.value = sample.playerType;
+  gameStage.value = sample.stage;
+  setSelectedDimensions(sample.dimensions);
+  buildReport();
+  reportStatus.textContent = `已载入 Fighting Demo 模拟反馈 · ${sample.priority}`;
+  document.querySelector(".report-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function clearInput() {
   problemInput.value = "";
   state.categoryEditedByUser = false;
@@ -785,6 +856,16 @@ exampleGrid.addEventListener("click", (event) => {
   applyExample(Number(button.dataset.exampleIndex));
 });
 
+fightingSampleList.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-fighting-sample-index]");
+  if (!button) return;
+  applyFightingSample(Number(button.dataset.fightingSampleIndex));
+});
+
+document.querySelector("#loadFightingCase").addEventListener("click", () => {
+  applyFightingSample(6);
+});
+
 savedList.addEventListener("click", (event) => {
   const loadButton = event.target.closest("[data-load-report]");
   const deleteButton = event.target.closest("[data-delete-report]");
@@ -794,5 +875,7 @@ savedList.addEventListener("click", (event) => {
 
 renderCategories();
 renderExamples();
+renderFightingSamples();
+renderPriorityRules();
 renderDimensions();
 renderSavedReports();
